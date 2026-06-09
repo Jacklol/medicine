@@ -30,6 +30,7 @@
     var startTime = Date.now();
     var revealEnabledAt = startTime + 1200;
     var isShowcaseMode = /\bshowcase=1\b/.test(window.location.search);
+    var isEmbeddedMode = /\bembed=1\b/.test(window.location.search);
 
     var panelTitle;
     var panelBody;
@@ -122,7 +123,7 @@
         scene.fog = new THREE.FogExp2(0x071019, 0.0016);
 
         camera = new THREE.PerspectiveCamera(isShowcaseMode ? 38 : 40, 1, 1, 1800);
-        camera.position.set(0, isShowcaseMode ? 4 : 18, isShowcaseMode ? 560 : 650);
+        camera.position.set(0, isShowcaseMode ? 4 : 18, isShowcaseMode ? 560 : (isEmbeddedMode ? 500 : 650));
         camera.lookAt(new THREE.Vector3(0, 0, 0));
 
         renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -150,6 +151,9 @@
         if (isShowcaseMode) {
             eyeRoot.scale.set(1.18, 1.18, 1.18);
             eyeRoot.position.set(0, 0, 0);
+        } else if (isEmbeddedMode) {
+            eyeRoot.scale.set(1.22, 1.22, 1.22);
+            eyeRoot.position.set(58, -16, 0);
         }
         scene.add(eyeRoot);
 
