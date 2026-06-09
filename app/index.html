@@ -1,107 +1,81 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
     <head>
         <meta charset="utf-8">
-        <title>Hemaflow Studio</title>
+        <title>тест</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <meta name="description" content="Hemaflow Studio creates interactive organic web experiences for brands, labs, and digital products.">
+        <meta name="description" content="тест">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 
-        <meta property="og:title" content="Hemaflow Studio" />
-        <meta property="og:description" content="Interactive organic web experiences for brands and digital products." />
+        <meta property="og:title" content="тест" />
+        <meta property="og:description" content="тест" />
         <meta property="og:image:type" content="image/jpeg" />
         <meta property="og:image:width" content="800" />
         <meta property="og:image:height" content="480" />
-        <meta property="og:image" content="http://www.edankwan.com/experiments/hyper-mix/images/share.jpg" />
+        <meta property="og:image" content="images/share.jpg" />
 
         <meta name="twitter:card" content="summary">
-        <meta name="twitter:site" content="@edankwan">
-        <meta name="twitter:url" content="http://www.edankwan.com/experiments/hyper-mix/">
-        <meta name="twitter:title" content="Hemaflow Studio">
-        <meta name="twitter:description" content="Interactive organic web experiences for brands and digital products.">
-        <meta name="twitter:image" content="http://www.edankwan.com/experiments/hyper-mix/images/share.jpg">
+        <meta name="twitter:title" content="тест">
+        <meta name="twitter:description" content="тест">
+        <meta name="twitter:image" content="images/share.jpg">
 
-        <link href='https://fonts.googleapis.com/css?family=Oxygen:400,700' rel='stylesheet' type='text/css'>
+        <link href="https://fonts.googleapis.com/css?family=Oxygen:400,700" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="css/normalize.css">
-        <link rel="stylesheet" href="css/index.css?v=combined-9">
+        <link rel="stylesheet" href="css/index.css?v=simple-1">
     </head>
     <body>
         <header class="site-header">
-            <a class="brand" href="#top" aria-label="Hemaflow Studio home">
+            <a class="brand" href="#top" aria-label="тест">
                 <span class="brand-mark"></span>
-                Hemaflow Studio
+                тест
             </a>
-            <nav class="site-nav" aria-label="Main navigation">
-                <a href="#company">Company</a>
-                <a href="#eye">Eye</a>
-                <a href="#lens-aging">Lens</a>
-                <a href="#constraint">Heart</a>
-                <a href="#services">Services</a>
-                <a href="#contact">Contact</a>
+            <nav class="site-nav" aria-label="Навигация">
+                <a href="#blood">Кровь</a>
+                <a href="#eye">Глаз</a>
+                <a href="#lens-aging">Хрусталик</a>
+                <a href="#constraint">Сердце</a>
             </nav>
         </header>
 
         <main>
-            <section class="hero" id="top">
-                <div class="visual-shell" aria-label="Organic blood-flow animation">
+            <section class="test-title" id="top">
+                <h1>тест</h1>
+            </section>
+
+            <section class="animation-section blood-section" id="blood">
+                <div class="animation-heading">
+                    <span>01</span>
+                    <h2>Кровь и сердце</h2>
+                </div>
+                <div class="visual-shell" aria-label="Анимация крови и сердца">
                     <div class="visual-stage"></div>
-                    <iframe class="hero-heart-frame" src="particle-love/constraint/index.html?v=shape-12&transparent=1&hero=1#motionBlurQuality=medium" title="Beating anatomical heart in blood flow"></iframe>
-                </div>
-                <div class="hero-copy">
-                    <div class="hero-heading">
-                        <p class="eyebrow">Interactive organic identity</p>
-                        <h1>Living digital presence for science, health, and technology brands.</h1>
-                    </div>
-                    <div class="hero-summary">
-                        <p>We build visual systems that feel alive: WebGL motion, expressive landing pages, and product stories with a tactile biological rhythm.</p>
-                        <div class="hero-actions">
-                            <a class="button primary" href="#contact">Start a project</a>
-                            <a class="button secondary" href="#company">Explore studio</a>
-                        </div>
-                    </div>
+                    <iframe class="hero-heart-frame" src="particle-love/constraint/index.html?v=shape-12&transparent=1&hero=1#motionBlurQuality=medium" title="Анимация сердца в потоке крови"></iframe>
                 </div>
             </section>
 
-            <section class="content-section intro-section" id="company">
-                <div class="section-kicker">Company</div>
-                <div class="section-grid">
-                    <h2>We turn complex ideas into clear, visceral web experiences.</h2>
-                    <p>Hemaflow Studio works with teams that need more than a static page. We shape visual language, interaction, and motion into one coherent first impression.</p>
+            <section class="animation-section eye-section" id="eye">
+                <div class="animation-heading">
+                    <span>02</span>
+                    <h2>Глаз</h2>
+                </div>
+                <div class="eye-shell">
+                    <iframe class="eye-frame" src="eye-anatomy/index.html?v=eye-10" title="Интерактивная модель глаза"></iframe>
                 </div>
             </section>
 
-            <section class="content-section eye-section" id="eye">
-                <div class="section-kicker">Eye Anatomy</div>
-                <div class="eye-layout">
-                    <div class="eye-copy">
-                        <h2>A refined eye model that opens into five key clinical layers.</h2>
-                        <p>The scene starts as a recognizable external eye, then opens into a cleaner focused model: cornea, iris and pupil, crystalline lens, retina, and optic nerve.</p>
-                        <div class="eye-parts" aria-label="Eye anatomy regions">
-                            <span>Cornea</span>
-                            <span>Iris</span>
-                            <span>Lens</span>
-                            <span>Retina</span>
-                            <span>Optic nerve</span>
-                        </div>
-                    </div>
-                    <div class="eye-shell">
-                        <iframe class="eye-frame" src="eye-anatomy/index.html?v=eye-10" title="Interactive anatomical eye model"></iframe>
-                    </div>
+            <section class="animation-section lens-aging-section" id="lens-aging" data-lens-aging>
+                <div class="animation-heading">
+                    <span>03</span>
+                    <h2>Хрусталик</h2>
                 </div>
-            </section>
-
-            <section class="lens-aging-section" id="lens-aging" data-lens-aging>
                 <div class="lens-aging-sticky">
                     <div class="lens-aging-copy">
-                        <p class="section-kicker">Lens Clarity</p>
-                        <h2>Vision shifts as the crystalline lens ages, then clears again with a new lens.</h2>
-                        <p class="lens-aging-summary">Move through lens aging from a clear young lens to dense clouding, then into a crisp view after replacement.</p>
                         <div class="lens-aging-readout" aria-live="polite">
                             <strong class="lens-stage-title">Clear young lens</strong>
                             <span class="lens-stage-body">High contrast, neutral color, and a sharp retinal image.</span>
                         </div>
                     </div>
-                    <div class="lens-aging-visual" aria-label="Interactive lens clarity simulation">
+                    <div class="lens-aging-visual" aria-label="Симуляция прозрачности хрусталика">
                         <div class="vision-window">
                             <img class="vision-image" src="images/lens-vision.svg" alt="">
                             <div class="vision-haze"></div>
@@ -110,7 +84,7 @@
                             <div class="lens-optic new-lens"></div>
                         </div>
                         <div class="lens-slider-control">
-                            <input class="lens-progress-slider" type="range" min="0" max="100" value="0" step="1" aria-label="Lens clarity stage">
+                            <input class="lens-progress-slider" type="range" min="0" max="100" value="0" step="1" aria-label="Стадия хрусталика">
                             <output class="lens-slider-value" aria-live="polite">20 years</output>
                         </div>
                         <div class="lens-timeline" aria-hidden="true">
@@ -124,65 +98,19 @@
                 </div>
             </section>
 
-            <section class="content-section constraint-section" id="constraint">
-                <div class="section-kicker">Constraint Heart</div>
-                <div class="constraint-grid">
-                    <div>
-                        <h2>An anatomical particle heart with coronary vessels, aortic arch, and pulsing walls.</h2>
-                        <p>This embedded scene keeps the connected Constraint motion language, but reshapes it into a more anatomical beating heart with ventricular walls, atrial forms, surface vessels, and a softer organic pulse.</p>
-                    </div>
-                    <a class="source-link" href="https://github.com/edankwan/Constraint" target="_blank" rel="noreferrer">Source on GitHub</a>
+            <section class="animation-section constraint-section" id="constraint">
+                <div class="animation-heading">
+                    <span>04</span>
+                    <h2>Сердце</h2>
                 </div>
                 <div class="constraint-shell">
-                    <iframe class="constraint-frame" src="particle-love/constraint/index.html?v=shape-12#motionBlurQuality=medium" title="Anatomical beating particle heart" loading="lazy"></iframe>
+                    <iframe class="constraint-frame" src="particle-love/constraint/index.html?v=shape-12#motionBlurQuality=medium" title="Интерактивная модель сердца" loading="lazy"></iframe>
                 </div>
-            </section>
-
-            <section class="content-section metrics-section" aria-label="Studio highlights">
-                <div class="metric-card">
-                    <strong>01</strong>
-                    <span>Interactive identity systems</span>
-                </div>
-                <div class="metric-card">
-                    <strong>02</strong>
-                    <span>WebGL scenes and launch pages</span>
-                </div>
-                <div class="metric-card">
-                    <strong>03</strong>
-                    <span>Brand storytelling for technical teams</span>
-                </div>
-            </section>
-
-            <section class="content-section services-section" id="services">
-                <div class="section-kicker">Services</div>
-                <div class="services-list">
-                    <article>
-                        <h3>Visual concept</h3>
-                        <p>Direction, mood, references, and motion language for a site that should feel distinctive from the first second.</p>
-                    </article>
-                    <article>
-                        <h3>Interactive front-end</h3>
-                        <p>Production-ready landing pages, responsive layouts, canvas/WebGL scenes, and performance-aware implementation.</p>
-                    </article>
-                    <article>
-                        <h3>Launch package</h3>
-                        <p>Copy structure, contact flow, reusable sections, and deployment-ready assets for a compact business site.</p>
-                    </article>
-                </div>
-            </section>
-
-            <section class="contact-section" id="contact">
-                <div>
-                    <p class="eyebrow">Contact</p>
-                    <h2>Tell us what your brand should feel like.</h2>
-                </div>
-                <a class="contact-link" href="mailto:hello@example.com">hello@example.com</a>
             </section>
         </main>
 
         <footer class="site-footer">
-            <span>Hemaflow Studio</span>
-            <span>Organic web experiences</span>
+            <span>тест</span>
         </footer>
 
         <div class="mobile" aria-hidden="true"></div>

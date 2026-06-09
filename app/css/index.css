@@ -89,6 +89,50 @@ main {
     width: 100%;
 }
 
+.test-title {
+    width: 100%;
+    padding: 56px 32px 34px;
+    border-bottom: 1px solid rgba(255, 218, 204, 0.12);
+}
+
+.test-title h1 {
+    max-width: 1180px;
+    margin: 0 auto;
+}
+
+.animation-section {
+    scroll-margin-top: 112px;
+    width: 100%;
+    padding: 76px 32px;
+    border-bottom: 1px solid rgba(255, 218, 204, 0.12);
+}
+
+.animation-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+    max-width: 1180px;
+    margin: 0 auto 24px;
+}
+
+.animation-heading span {
+    color: #ff756a;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.animation-heading h2 {
+    margin: 0;
+    text-align: right;
+}
+
+.blood-section {
+    background:
+        radial-gradient(circle at 72% 28%, rgba(255, 42, 31, 0.14), transparent 30%),
+        #14080a;
+}
+
 .hero {
     width: 100%;
     padding: 24px 32px 44px;
@@ -98,6 +142,8 @@ main {
 .visual-shell {
     position: relative;
     width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
     height: 50vh;
     min-height: 360px;
     max-height: 560px;
@@ -312,6 +358,8 @@ h3 {
 }
 
 .eye-shell {
+    max-width: 1180px;
+    margin: 0 auto;
     min-height: 500px;
     overflow: hidden;
     border: 1px solid rgba(190, 235, 238, 0.16);
@@ -336,7 +384,6 @@ h3 {
     --new-lens-opacity: 0;
     --timeline-progress: 0%;
     --slider-progress: 0%;
-    padding: 92px 32px;
     border-bottom: 1px solid rgba(255, 218, 204, 0.12);
     background:
         radial-gradient(circle at 18% 28%, rgba(255, 185, 117, 0.16), transparent 32%),
@@ -629,6 +676,8 @@ h3 {
 }
 
 .constraint-shell {
+    max-width: 1180px;
+    margin: 0 auto;
     width: 100%;
     height: 430px;
     overflow: hidden;
@@ -747,6 +796,8 @@ h3 {
     }
 
     .hero,
+    .test-title,
+    .animation-section,
     .content-section,
     .contact-section {
         padding-left: 20px;
@@ -869,6 +920,27 @@ h3 {
 }
 
 @media (max-width: 520px) {
+    .test-title {
+        padding-top: 34px;
+        padding-bottom: 22px;
+    }
+
+    .animation-section {
+        padding-top: 54px;
+        padding-bottom: 54px;
+    }
+
+    .animation-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 18px;
+    }
+
+    .animation-heading h2 {
+        text-align: left;
+    }
+
     .hero {
         padding-top: 18px;
         padding-bottom: 28px;
