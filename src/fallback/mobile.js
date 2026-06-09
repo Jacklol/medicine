@@ -7,12 +7,7 @@ settings.isMobile = isMobile;
 var _callback;
 
 function pass(func) {
-    if(isMobile) {
-        _callback = func;
-        init();
-    } else {
-        func();
-    }
+    func();
 }
 
 var _container;

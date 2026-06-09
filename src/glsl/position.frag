@@ -43,6 +43,16 @@ void main() {
         life = 0.5 + fract(positionInfo.w * 21.4131 + time) * 0.499;
     } else {
         position.x -= speed * side * uEmitterSpeed * smoothstep(-1.0, -0.5, -life) * initForce * deltaRatio;
+
+        float progress = 1.0 - smoothstep(0.08, 0.98, life);
+        float helixStrength = initForce * smoothstep(0.02, 0.38, progress) * (1.0 - smoothstep(0.78, 1.0, progress) * 0.45);
+        float pulse = sin(time * 2.1 + uv.y * 22.0 + side * 1.7) * 0.5 + 0.5;
+        float helixPhase = progress * 15.0 + side * 3.14159265 + uv.y * 6.5 + time * 0.55;
+        vec2 helix = vec2(sin(helixPhase), cos(helixPhase)) * (62.0 + pulse * 38.0);
+        float helixPull = speed * helixStrength * 0.055 * deltaRatio;
+        position.y += (50.0 + helix.x - position.y) * helixPull;
+        position.z += (helix.y - position.z) * helixPull;
+
         position += curl(position * curlSize, time * 2.3, 1.2 + (1.0 - life) * 0.35) * speed * (1.75 - life) * deltaRatio;
 
         vec3 color3 = getColor3(positionInfo.xyz);

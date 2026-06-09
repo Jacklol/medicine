@@ -39,6 +39,7 @@ var _control;
 var _camera;
 var _scene;
 var _renderer;
+var _visualStage;
 
 var _bgColor;
 
@@ -56,6 +57,8 @@ var _footerItems;
 var _isSkipRendering = false;
 
 function init() {
+
+    _visualStage = document.querySelector('.visual-stage') || document.body;
 
     if(settings.useStats) {
         _stats = new Stats();
@@ -95,7 +98,7 @@ function init() {
     _renderer.autoClearColor = true;
     _renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     _renderer.shadowMap.enabled = true;
-    document.body.appendChild(_renderer.domElement);
+    _visualStage.appendChild(_renderer.domElement);
 
     _scene = new THREE.Scene();
     _scene.fog = new THREE.FogExp2( _bgColor, 0.001 );
@@ -234,8 +237,9 @@ function _bindTouch(func) {
 }
 
 function _onMove(evt) {
-    settings.mouse.x = (evt.pageX / _width) * 2 - 1;
-    settings.mouse.y = -(evt.pageY / _height) * 2 + 1;
+    var bounds = _visualStage.getBoundingClientRect();
+    settings.mouse.x = ((evt.clientX - bounds.left) / bounds.width) * 2 - 1;
+    settings.mouse.y = -((evt.clientY - bounds.top) / bounds.height) * 2 + 1;
 }
 
 function _onKeyUp(evt) {
@@ -246,8 +250,9 @@ function _onKeyUp(evt) {
 }
 
 function _onResize() {
-    _width = window.innerWidth;
-    _height = window.innerHeight;
+    var bounds = _visualStage.getBoundingClientRect();
+    _width = Math.max(1, Math.round(bounds.width || window.innerWidth));
+    _height = Math.max(1, Math.round(bounds.height || window.innerHeight));
 
     particles.resize(_width, _height);
     postprocessing.resize(_width, _height);

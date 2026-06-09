@@ -27,7 +27,7 @@ exports.simulatorTextureWidth = amountInfo[0];
 exports.simulatorTextureHeight = amountInfo[1];
 
 exports.emitterDistanceRatio = 0.65;
-exports.emitterSpeed = 20.0;
+exports.emitterSpeed = 14.0;
 
 exports.volumeWidth = 256;
 exports.volumeHeight = 128;
@@ -39,13 +39,13 @@ exports.volumeScale = 7;
 exports.speed = 0.45;
 exports.dieSpeed = 0.0035;
 exports.radius = amountInfo[2];
-exports.blur = 0;
-exports.curlSize = 0.00055;
+exports.blur = 0.35;
+exports.curlSize = 0.00062;
 
-exports.particleSize = 32;
-exports.bgColor = '#1c2020';
-exports.color1 = '#e6005e';
-exports.color2 = '#00b1d7';
+exports.particleSize = 30;
+exports.bgColor = '#14080a';
+exports.color1 = '#760014';
+exports.color2 = '#ff2a1f';
 exports.dof = 0;
 exports.dofFocus = 1;
 exports.uDofDistance = 0;
