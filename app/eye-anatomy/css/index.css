@@ -28,6 +28,16 @@ canvas.is-grabbing {
     cursor: grabbing;
 }
 
+html.is-showcase .eye-panel,
+html.is-showcase .part-dock,
+html.is-showcase .hover-tag {
+    display: none !important;
+}
+
+html.is-showcase canvas {
+    cursor: grab;
+}
+
 .eye-panel {
     position: absolute;
     top: 22px;

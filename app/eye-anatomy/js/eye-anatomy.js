@@ -29,6 +29,7 @@
     var explodeProgress = 0;
     var startTime = Date.now();
     var revealEnabledAt = startTime + 1200;
+    var isShowcaseMode = /\bshowcase=1\b/.test(window.location.search);
 
     var panelTitle;
     var panelBody;
@@ -103,6 +104,14 @@
     animate();
 
     function init() {
+        if (isShowcaseMode) {
+            document.documentElement.classList.add('is-showcase');
+            targetRotationX = 0;
+            targetRotationY = 0;
+            currentRotationX = targetRotationX;
+            currentRotationY = targetRotationY;
+        }
+
         panelTitle = document.querySelector('.eye-part-title');
         panelBody = document.querySelector('.eye-part-body');
         panelMeta = document.querySelector('.eye-part-meta');
@@ -112,8 +121,8 @@
         scene = new THREE.Scene();
         scene.fog = new THREE.FogExp2(0x071019, 0.0016);
 
-        camera = new THREE.PerspectiveCamera(40, 1, 1, 1800);
-        camera.position.set(0, 18, 650);
+        camera = new THREE.PerspectiveCamera(isShowcaseMode ? 38 : 40, 1, 1, 1800);
+        camera.position.set(0, isShowcaseMode ? 4 : 18, isShowcaseMode ? 560 : 650);
         camera.lookAt(new THREE.Vector3(0, 0, 0));
 
         renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -138,6 +147,10 @@
         eyeRoot = new THREE.Object3D();
         eyeRoot.rotation.x = currentRotationX;
         eyeRoot.rotation.y = currentRotationY;
+        if (isShowcaseMode) {
+            eyeRoot.scale.set(1.18, 1.18, 1.18);
+            eyeRoot.position.set(0, 0, 0);
+        }
         scene.add(eyeRoot);
 
         raycaster = new THREE.Raycaster();
@@ -154,6 +167,7 @@
     }
 
     function buildDock() {
+        if (isShowcaseMode) return;
         partDock.innerHTML = '';
         partOrder.forEach(function (id) {
             var button = document.createElement('button');
@@ -355,6 +369,7 @@
     }
 
     function addLightPath() {
+        if (isShowcaseMode) return;
         var material = makeMaterial(0xffe6a8, 0.24, 0x281702);
         addSegment(null, new THREE.Vector3(-190, 34, 76), new THREE.Vector3(-62, 10, 72), 1.0, material, 6);
         addSegment(null, new THREE.Vector3(-190, -34, 76), new THREE.Vector3(-62, -10, 72), 1.0, material, 6);
@@ -670,17 +685,30 @@
         var point = getPointer(event);
         if (!point) return;
         isDragging = true;
-        explodeTarget = 1;
+        if (!isShowcaseMode) explodeTarget = 1;
         lastPointerX = point.x;
         lastPointerY = point.y;
         renderer.domElement.classList.add('is-grabbing');
-        updateHover(point.x, point.y, true);
+        if (!isShowcaseMode) updateHover(point.x, point.y, true);
         if (event.preventDefault) event.preventDefault();
     }
 
     function onPointerMove(event) {
         var point = getPointer(event);
         if (!point) return;
+        if (isShowcaseMode) {
+            if (isDragging) {
+                var showcaseDx = point.x - lastPointerX;
+                var showcaseDy = point.y - lastPointerY;
+                lastPointerX = point.x;
+                lastPointerY = point.y;
+                targetRotationY += showcaseDx * 0.004;
+                targetRotationX += showcaseDy * 0.0025;
+                targetRotationX = Math.max(-0.36, Math.min(0.36, targetRotationX));
+                if (event.preventDefault) event.preventDefault();
+            }
+            return;
+        }
         var isInCanvas = isPointInsideCanvas(point);
         var isDockEvent = event.target && event.target.closest && event.target.closest('.part-dock');
         if (!isDragging && !isDockEvent && Date.now() < revealEnabledAt) return;
@@ -787,8 +815,8 @@
     }
 
     function resetRotation() {
-        targetRotationX = -0.04;
-        targetRotationY = -0.22;
+        targetRotationX = isShowcaseMode ? 0 : -0.04;
+        targetRotationY = isShowcaseMode ? 0 : -0.22;
     }
 
     function onResize() {
@@ -806,8 +834,13 @@
         var explodeEase = smoothstep(0, 1, explodeProgress);
 
         if (!isDragging) {
-            targetRotationY += 0.0006;
-            targetRotationX += (-0.04 - targetRotationX) * 0.004;
+            if (isShowcaseMode) {
+                targetRotationY += (Math.sin(t * 0.34) * 0.16 - targetRotationY) * 0.018;
+                targetRotationX += (Math.sin(t * 0.26) * 0.035 - targetRotationX) * 0.018;
+            } else {
+                targetRotationY += 0.0006;
+                targetRotationX += (-0.04 - targetRotationX) * 0.004;
+            }
         }
 
         currentRotationX += (targetRotationX - currentRotationX) * 0.1;
@@ -858,6 +891,22 @@
 
     function applyFrontEyeState(explodeEase, t) {
         if (!frontEyeGroup) return;
+        if (isShowcaseMode) {
+            frontEyeGroup.visible = true;
+            frontEyeGroup.scale.set(1.04 + Math.sin(t * 1.4) * 0.01, 1.02, 1);
+            frontEyeGroup.position.set(0, 0, 94);
+            for (var showcaseIndex = 0; showcaseIndex < frontEyeObjects.length; showcaseIndex++) {
+                var showcaseMaterials = getMaterials(frontEyeObjects[showcaseIndex]);
+                for (var showcaseMaterialIndex = 0; showcaseMaterialIndex < showcaseMaterials.length; showcaseMaterialIndex++) {
+                    var showcaseMaterial = showcaseMaterials[showcaseMaterialIndex];
+                    var showcaseOpacity = showcaseMaterial.userData && showcaseMaterial.userData.frontBaseOpacity !== undefined ?
+                        showcaseMaterial.userData.frontBaseOpacity :
+                        1;
+                    showcaseMaterial.opacity = showcaseOpacity;
+                }
+            }
+            return;
+        }
         var visibleAmount = 1 - smoothstep(0.08, 0.82, explodeEase);
         frontEyeGroup.visible = visibleAmount > 0.02;
         frontEyeGroup.scale.set(
@@ -881,6 +930,12 @@
     }
 
     function applyMaterialState(t, explodeEase) {
+        if (isShowcaseMode) {
+            setObjectsVisibility(partObjects, false);
+            setObjectsVisibility(hitAreaObjects, false);
+            setObjectsOpacity(partObjects, 0);
+            return;
+        }
         var pulse = 0.5 + Math.sin(t * 3.6) * 0.5;
         var layerVisibility = 0.08 + explodeEase * 0.92;
         var touchedMaterials = [];
@@ -906,6 +961,11 @@
     }
 
     function applyRevealState(explodeEase) {
+        if (isShowcaseMode) {
+            setObjectsVisibility(revealObjects, false);
+            setObjectsOpacity(revealObjects, 0);
+            return;
+        }
         var revealVisibility = 0.08 + explodeEase * 0.92;
         var touchedMaterials = [];
         for (var i = 0; i < revealObjects.length; i++) {
@@ -919,6 +979,25 @@
     function getMaterials(object) {
         if (!object.material) return [];
         return Array.isArray(object.material) ? object.material : [object.material];
+    }
+
+    function setObjectsOpacity(objects, opacity) {
+        var touchedMaterials = [];
+        for (var i = 0; i < objects.length; i++) {
+            var materials = getMaterials(objects[i]);
+            for (var j = 0; j < materials.length; j++) {
+                var material = materials[j];
+                if (!material || material.opacity === undefined || touchedMaterials.indexOf(material) !== -1) continue;
+                touchedMaterials.push(material);
+                material.opacity = opacity;
+            }
+        }
+    }
+
+    function setObjectsVisibility(objects, visible) {
+        for (var i = 0; i < objects.length; i++) {
+            objects[i].visible = visible;
+        }
     }
 
     function smoothstep(edge0, edge1, x) {

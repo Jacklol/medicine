@@ -360,7 +360,8 @@ h3 {
 .eye-shell {
     max-width: 1180px;
     margin: 0 auto;
-    min-height: 500px;
+    height: min(58vw, 560px);
+    min-height: 420px;
     overflow: hidden;
     border: 1px solid rgba(190, 235, 238, 0.16);
     border-radius: 8px;
@@ -850,7 +851,8 @@ h3 {
     }
 
     .eye-shell {
-        min-height: 380px;
+        height: 420px;
+        min-height: 0;
     }
 
     .constraint-grid {
@@ -985,7 +987,8 @@ h3 {
     }
 
     .eye-shell {
-        min-height: 330px;
+        height: 340px;
+        min-height: 0;
     }
 
     .lens-aging-section {
