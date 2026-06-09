@@ -8,6 +8,12 @@
     var heartRoot;
     var coreGlow;
     var pulseLight;
+    var raycaster;
+    var mouse;
+    var heartPartObjects = [];
+    var heartHitObjects = [];
+    var activeHeartPart = 'ventricles';
+    var hoverHeartPart = null;
     var width = 1;
     var height = 1;
     var startTime = Date.now();
@@ -20,25 +26,82 @@
     var currentRotationY = -0.46;
     var rotationVelocityX = 0;
     var rotationVelocityY = 0;
+    var isTransparent = /\btransparent=1\b/.test(window.location.search);
+    var isHeroEmbed = /\bhero=1\b/.test(window.location.search);
 
     var deepRed = 0x360309;
     var wallRed = 0x8d1717;
     var hotRed = 0xff2a24;
     var darkBlue = 0x172541;
 
+    var heartParts = {
+        ventricles: {
+            title: 'Ventricles',
+            chip: 'Ventricles',
+            body: 'Lower pumping chambers that drive blood out through the pulmonary artery and aorta.',
+            meta: 'Pumping mass',
+            accent: 0xff4e3d,
+            priority: 10
+        },
+        atria: {
+            title: 'Atria',
+            chip: 'Atria',
+            body: 'Upper receiving chambers that feed blood into the ventricles before each beat.',
+            meta: 'Receiving chambers',
+            accent: 0xff9185,
+            priority: 8
+        },
+        aorta: {
+            title: 'Aorta',
+            chip: 'Aorta',
+            body: 'Main systemic artery carrying oxygenated blood from the left ventricle.',
+            meta: 'Systemic outflow',
+            accent: 0xff7669,
+            priority: 9
+        },
+        pulmonary: {
+            title: 'Pulmonary artery',
+            chip: 'Pulmonary',
+            body: 'Vessel pathway carrying blood from the right ventricle toward the lungs.',
+            meta: 'Lung outflow',
+            accent: 0x8fa3ff,
+            priority: 9
+        },
+        coronary: {
+            title: 'Coronary vessels',
+            chip: 'Coronary',
+            body: 'Surface vessels that supply the heart muscle itself during the cardiac cycle.',
+            meta: 'Heart muscle supply',
+            accent: 0xffd18a,
+            priority: 13
+        }
+    };
+    var heartPartOrder = ['ventricles', 'atria', 'aorta', 'pulmonary', 'coronary'];
+    var heartPartPanel;
+    var heartPartBody;
+    var heartPartMeta;
+    var heartPartDock;
+    var heartHoverTag;
+
     init();
     animate();
 
     function init() {
+        if (isTransparent) {
+            document.documentElement.classList.add('is-transparent');
+        }
+        if (isHeroEmbed) {
+            document.documentElement.classList.add('is-hero');
+        }
         scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x100f12, 0.0016);
+        scene.fog = new THREE.FogExp2(0x100f12, isTransparent ? 0.0009 : 0.0016);
 
         camera = new THREE.PerspectiveCamera(42, 1, 1, 2600);
-        camera.position.set(0, 34, 780);
+        camera.position.set(0, isHeroEmbed ? 18 : 34, isHeroEmbed ? 720 : 780);
         camera.lookAt(new THREE.Vector3(0, 18, 0));
 
-        renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setClearColor(0x100f12);
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: isTransparent });
+        renderer.setClearColor(0x100f12, isTransparent ? 0 : 1);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
         document.body.appendChild(renderer.domElement);
 
@@ -62,8 +125,17 @@
         heartRoot.rotation.x = currentRotationX;
         scene.add(heartRoot);
 
+        raycaster = new THREE.Raycaster();
+        mouse = new THREE.Vector2();
+        bindHeartUi();
         buildHeart();
+        addHeartHitAreas();
+        buildHeartDock();
         addInteraction();
+        if (isHeroEmbed) {
+            window.addEventListener('message', onHostMessage);
+        }
+        setHeartPart(activeHeartPart);
         renderer.domElement.setAttribute('data-controls', 'ready');
         window.addEventListener('resize', onResize);
         onResize();
@@ -76,7 +148,7 @@
             specular: 0x45100f,
             shininess: 8,
             transparent: true,
-            opacity: 0.6,
+            opacity: isHeroEmbed ? 0.78 : 0.6,
             side: THREE.DoubleSide
         });
 
@@ -122,18 +194,19 @@
         });
 
         [
-            { model: ventricularMass, atrium: false, opacity: 0.72 },
-            { model: leftAtrium, atrium: true, opacity: 0.46 },
-            { model: rightAtrium, atrium: true, opacity: 0.48 },
-            { model: leftAuricle, atrium: true, opacity: 0.5 },
-            { model: rightAuricle, atrium: true, opacity: 0.5 }
+            { model: ventricularMass, atrium: false, opacity: isHeroEmbed ? 0.88 : 0.72, part: 'ventricles' },
+            { model: leftAtrium, atrium: true, opacity: isHeroEmbed ? 0.62 : 0.46, part: 'atria' },
+            { model: rightAtrium, atrium: true, opacity: isHeroEmbed ? 0.64 : 0.48, part: 'atria' },
+            { model: leftAuricle, atrium: true, opacity: isHeroEmbed ? 0.64 : 0.5, part: 'atria' },
+            { model: rightAuricle, atrium: true, opacity: isHeroEmbed ? 0.64 : 0.5, part: 'atria' }
         ].forEach(function (partInfo) {
             var part = partInfo.model;
             var mesh = new THREE.Mesh(part.geometry, wallMaterial.clone());
             mesh.material.opacity = partInfo.opacity;
             heartRoot.add(mesh);
+            registerHeartVisual(mesh, partInfo.part);
             if (partInfo.surface !== false) {
-                addSurfaceNetwork(part.points, part.cols, part.rows, partInfo.atrium);
+                addSurfaceNetwork(part.points, part.cols, part.rows, partInfo.atrium, partInfo.part);
             }
         });
 
@@ -344,7 +417,7 @@
         };
     }
 
-    function addSurfaceNetwork(points, cols, rows, isAtrium) {
+    function addSurfaceNetwork(points, cols, rows, isAtrium, partId) {
         var particlePoints = [];
         var density = isAtrium ? 0.48 : 0.38;
         for (var pointRow = 1; pointRow < rows - 1; pointRow++) {
@@ -369,14 +442,16 @@
 
         var pointGeometry = new THREE.BufferGeometry();
         pointGeometry.addAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-        heartRoot.add(new THREE.Points(pointGeometry, new THREE.PointsMaterial({
+        var surfacePointsObject = new THREE.Points(pointGeometry, new THREE.PointsMaterial({
             color: isAtrium ? 0xff4b42 : 0xdc1616,
             size: isAtrium ? 2.1 : 1.8,
             transparent: true,
             opacity: isAtrium ? 0.56 : 0.68,
             blending: THREE.AdditiveBlending,
             depthWrite: false
-        })));
+        }));
+        heartRoot.add(surfacePointsObject);
+        registerHeartVisual(surfacePointsObject, partId);
 
         var lineList = [];
         for (var row = 1; row < rows - 1; row++) {
@@ -387,13 +462,15 @@
             }
         }
 
-        heartRoot.add(new THREE.LineSegments(makeLineGeometry(lineList), new THREE.LineBasicMaterial({
+        var surfaceLineObject = new THREE.LineSegments(makeLineGeometry(lineList), new THREE.LineBasicMaterial({
             color: isAtrium ? 0xa62b24 : 0x9c1012,
             transparent: true,
             opacity: isAtrium ? 0.22 : 0.28,
             blending: THREE.AdditiveBlending,
             depthWrite: false
-        })));
+        }));
+        heartRoot.add(surfaceLineObject);
+        registerHeartVisual(surfaceLineObject, partId);
     }
 
     function addSeptumGroove() {
@@ -600,7 +677,7 @@
         tubeGeometry.faces = faces;
         tubeGeometry.computeFaceNormals();
         tubeGeometry.computeVertexNormals();
-        heartRoot.add(new THREE.Mesh(tubeGeometry, new THREE.MeshPhongMaterial({
+        var meshMaterial = new THREE.MeshPhongMaterial({
             color: color,
             emissive: options.emissive || 0x150204,
             specular: options.specular || 0x9b4842,
@@ -609,7 +686,10 @@
             opacity: options.meshOpacity === undefined ? Math.min(0.42, opacity * 0.58) : options.meshOpacity,
             depthWrite: false,
             side: THREE.DoubleSide
-        })));
+        });
+        var tubeMesh = new THREE.Mesh(tubeGeometry, meshMaterial);
+        heartRoot.add(tubeMesh);
+        registerHeartVisual(tubeMesh, mapTubeToHeartPart(name));
 
         var pointPositions = new Float32Array(displayPoints.length * 3);
         for (var n = 0; n < displayPoints.length; n++) {
@@ -619,21 +699,26 @@
         }
         var pointGeometry = new THREE.BufferGeometry();
         pointGeometry.addAttribute('position', new THREE.BufferAttribute(pointPositions, 3));
-        heartRoot.add(new THREE.Points(pointGeometry, new THREE.PointsMaterial({
+        var pointsObject = new THREE.Points(pointGeometry, new THREE.PointsMaterial({
             color: color,
             size: options.pointSize || 2.35,
             transparent: true,
             opacity: opacity,
             blending: THREE.AdditiveBlending,
             depthWrite: false
-        })));
-        heartRoot.add(new THREE.LineSegments(makeLineGeometry(lines), new THREE.LineBasicMaterial({
+        }));
+        heartRoot.add(pointsObject);
+        registerHeartVisual(pointsObject, mapTubeToHeartPart(name));
+
+        var lineObject = new THREE.LineSegments(makeLineGeometry(lines), new THREE.LineBasicMaterial({
             color: color,
             transparent: true,
             opacity: opacity * 0.36,
             blending: THREE.AdditiveBlending,
             depthWrite: false
-        })));
+        }));
+        heartRoot.add(lineObject);
+        registerHeartVisual(lineObject, mapTubeToHeartPart(name));
     }
 
     function sampleCurve(points, t) {
@@ -670,6 +755,182 @@
         return t * t * (3 - 2 * t);
     }
 
+    function bindHeartUi() {
+        heartPartPanel = document.querySelector('.heart-part-title');
+        heartPartBody = document.querySelector('.heart-part-body');
+        heartPartMeta = document.querySelector('.heart-part-meta');
+        heartPartDock = document.querySelector('.heart-part-dock');
+        heartHoverTag = document.querySelector('.heart-hover-tag');
+    }
+
+    function buildHeartDock() {
+        if (isHeroEmbed || !heartPartDock) return;
+        heartPartDock.innerHTML = '';
+        heartPartOrder.forEach(function (partId) {
+            var part = heartParts[partId];
+            var chip = document.createElement('button');
+            chip.className = 'heart-chip';
+            chip.type = 'button';
+            chip.dataset.part = partId;
+            chip.textContent = part.chip;
+            chip.addEventListener('mouseenter', function () {
+                setHeartPart(partId);
+            });
+            chip.addEventListener('focus', function () {
+                setHeartPart(partId);
+            });
+            chip.addEventListener('click', function () {
+                setHeartPart(partId);
+            });
+            heartPartDock.appendChild(chip);
+        });
+    }
+
+    function setHeartPart(partId) {
+        var part = heartParts[partId];
+        if (!part) return;
+        activeHeartPart = partId;
+        document.documentElement.setAttribute('data-active-heart-part', partId);
+        if (heartPartPanel) heartPartPanel.textContent = part.title;
+        if (heartPartBody) heartPartBody.textContent = part.body;
+        if (heartPartMeta) heartPartMeta.textContent = part.meta;
+        if (!heartPartDock) return;
+        var chips = heartPartDock.querySelectorAll('.heart-chip');
+        for (var i = 0; i < chips.length; i++) {
+            chips[i].classList.toggle('is-active', chips[i].dataset.part === partId);
+        }
+    }
+
+    function mapTubeToHeartPart(name) {
+        if (/^(aorta|aortaBranch|descendingAorta)/.test(name)) return 'aorta';
+        if (/^(pulmonaryTrunk|pulmonaryRightBranch)/.test(name)) return 'pulmonary';
+        if (name === 'coronary') return 'coronary';
+        return null;
+    }
+
+    function registerHeartVisual(object, partId) {
+        if (!object || !heartParts[partId]) return;
+        var material = object.material;
+        object.userData.heartPart = partId;
+        object.userData.baseOpacity = material && material.opacity !== undefined ? material.opacity : 1;
+        object.userData.baseColor = material && material.color ? material.color.getHex() : 0xffffff;
+        object.userData.baseEmissive = material && material.emissive ? material.emissive.getHex() : 0;
+        object.userData.baseSize = material && material.size !== undefined ? material.size : null;
+        heartPartObjects.push(object);
+    }
+
+    function addHeartHitAreas() {
+        if (isHeroEmbed) return;
+        addHeartHitArea('ventricles', 86, new THREE.Vector3(1.22, 1.45, 0.72), new THREE.Vector3(12, -54, 58));
+        addHeartHitArea('atria', 66, new THREE.Vector3(1.95, 0.92, 0.72), new THREE.Vector3(4, 70, 42));
+        addHeartHitArea('aorta', 58, new THREE.Vector3(1.15, 1.35, 0.72), new THREE.Vector3(38, 188, -34));
+        addHeartHitArea('pulmonary', 56, new THREE.Vector3(1.9, 0.62, 0.58), new THREE.Vector3(-44, 156, 78));
+        addHeartHitArea('coronary', 30, new THREE.Vector3(1.45, 0.82, 0.46), new THREE.Vector3(6, 22, 102));
+        addHeartHitArea('coronary', 28, new THREE.Vector3(1.15, 1.05, 0.46), new THREE.Vector3(62, -36, 86));
+        addHeartHitArea('coronary', 26, new THREE.Vector3(1.18, 1.05, 0.46), new THREE.Vector3(-42, -30, 92));
+        addHeartHitArea('coronary', 24, new THREE.Vector3(0.9, 1.45, 0.46), new THREE.Vector3(8, -102, 66));
+    }
+
+    function addHeartHitArea(partId, radius, scale, position) {
+        var hit = new THREE.Mesh(
+            new THREE.SphereGeometry(radius, 20, 14),
+            new THREE.MeshBasicMaterial({
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0,
+                depthWrite: false,
+                side: THREE.DoubleSide
+            })
+        );
+        hit.position.copy(position);
+        hit.scale.copy(scale);
+        hit.userData.heartPart = partId;
+        hit.renderOrder = -10;
+        heartRoot.add(hit);
+        heartHitObjects.push(hit);
+    }
+
+    function updateHeartHover(clientX, clientY, persist) {
+        if (isHeroEmbed || !raycaster || !heartHitObjects.length) return;
+        var rect = renderer.domElement.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+        raycaster.setFromCamera(mouse, camera);
+
+        var hit = chooseHeartHit(raycaster.intersectObjects(heartHitObjects, false));
+        if (!hit) {
+            if (!persist) clearHeartHover();
+            return;
+        }
+
+        var partId = hit.object.userData.heartPart;
+        hoverHeartPart = partId;
+        document.documentElement.setAttribute('data-hover-heart-part', partId);
+        setHeartPart(partId);
+        if (heartHoverTag) {
+            heartHoverTag.textContent = heartParts[partId].title;
+            heartHoverTag.style.left = (clientX - rect.left) + 'px';
+            heartHoverTag.style.top = (clientY - rect.top) + 'px';
+            heartHoverTag.style.display = 'block';
+        }
+    }
+
+    function chooseHeartHit(hits) {
+        if (!hits.length) return null;
+        var selected = hits[0];
+        var selectedScore = hitScore(selected);
+        for (var i = 1; i < hits.length; i++) {
+            var score = hitScore(hits[i]);
+            if (score > selectedScore) {
+                selected = hits[i];
+                selectedScore = score;
+            }
+        }
+        return selected;
+    }
+
+    function hitScore(hit) {
+        var part = heartParts[hit.object.userData.heartPart];
+        return (part ? part.priority : 0) - hit.distance * 0.0005;
+    }
+
+    function clearHeartHover() {
+        hoverHeartPart = null;
+        document.documentElement.setAttribute('data-hover-heart-part', '');
+        if (heartHoverTag) heartHoverTag.style.display = 'none';
+    }
+
+    function applyHeartPartState(t) {
+        if (isHeroEmbed) return;
+        var pulse = 0.5 + Math.sin(t * 4.8) * 0.5;
+        for (var i = 0; i < heartPartObjects.length; i++) {
+            var object = heartPartObjects[i];
+            var partId = object.userData.heartPart;
+            var part = heartParts[partId];
+            var material = object.material;
+            if (!part || !material) continue;
+
+            var isSelected = partId === activeHeartPart;
+            var isHovered = partId === hoverHeartPart;
+            var emphasis = isSelected ? 1 : (isHovered ? 0.7 : 0);
+            if (material.emissive) {
+                material.color.setHex(object.userData.baseColor);
+                material.emissive.setHex(emphasis ? part.accent : object.userData.baseEmissive);
+            } else if (material.color) {
+                material.color.setHex(emphasis ? part.accent : object.userData.baseColor);
+            }
+            if (material.opacity !== undefined) {
+                material.opacity = emphasis
+                    ? Math.min(1, object.userData.baseOpacity + 0.18 * emphasis + pulse * 0.08)
+                    : object.userData.baseOpacity;
+            }
+            if (material.size !== undefined && object.userData.baseSize !== null) {
+                material.size = object.userData.baseSize * (emphasis ? 1.18 + pulse * 0.08 : 1);
+            }
+        }
+    }
+
     function onResize() {
         width = Math.max(1, window.innerWidth);
         height = Math.max(1, window.innerHeight);
@@ -695,11 +956,15 @@
             window.addEventListener('touchcancel', onPointerUp);
         }
         canvas.addEventListener('dblclick', resetRotation);
+        if (!isHeroEmbed) {
+            canvas.addEventListener('mouseleave', clearHeartHover);
+        }
     }
 
     function onPointerDown(event) {
         var pointer = getPointer(event);
         if (!pointer) return;
+        updateHeartHover(pointer.x, pointer.y, true);
         isDragging = true;
         lastPointerX = pointer.x;
         lastPointerY = pointer.y;
@@ -713,9 +978,12 @@
     }
 
     function onPointerMove(event) {
-        if (!isDragging) return;
         var pointer = getPointer(event);
         if (!pointer) return;
+        if (!isDragging) {
+            updateHeartHover(pointer.x, pointer.y, false);
+            return;
+        }
         var dx = pointer.x - lastPointerX;
         var dy = pointer.y - lastPointerY;
         lastPointerX = pointer.x;
@@ -727,6 +995,23 @@
         rotationVelocityY = dx * 0.00065;
         rotationVelocityX = dy * 0.00038;
         if (event.preventDefault) event.preventDefault();
+    }
+
+    function onHostMessage(event) {
+        var data = event.data || {};
+        if (data.type === 'hemaflow-heart-reset') {
+            resetRotation();
+            return;
+        }
+        if (data.type !== 'hemaflow-heart-drag') return;
+
+        var dx = Number(data.dx) || 0;
+        var dy = Number(data.dy) || 0;
+        targetRotationY += dx * 0.006;
+        targetRotationX += dy * 0.004;
+        targetRotationX = Math.max(-0.72, Math.min(0.62, targetRotationX));
+        rotationVelocityY = dx * 0.00065;
+        rotationVelocityX = dy * 0.00038;
     }
 
     function onPointerUp() {
@@ -782,6 +1067,7 @@
         renderer.domElement.setAttribute('data-rotation-x', targetRotationX.toFixed(4));
         renderer.domElement.setAttribute('data-rotation-y', targetRotationY.toFixed(4));
         renderer.domElement.setAttribute('data-dragging', isDragging ? 'true' : 'false');
+        applyHeartPartState(t);
 
         renderer.render(scene, camera);
     }
@@ -864,13 +1150,15 @@
             var b = sampleCurve(points, (i + 1) / 64);
             pushSegment(lineList, a, b);
         }
-        heartRoot.add(new THREE.LineSegments(makeLineGeometry(lineList), new THREE.LineBasicMaterial({
+        var coronaryLine = new THREE.LineSegments(makeLineGeometry(lineList), new THREE.LineBasicMaterial({
             color: color,
             transparent: true,
             opacity: opacity,
             blending: THREE.AdditiveBlending,
             depthWrite: false
-        })));
+        }));
+        heartRoot.add(coronaryLine);
+        registerHeartVisual(coronaryLine, 'coronary');
     }
 
     function addMuscleFibers() {

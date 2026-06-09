@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-label="Clinical vision clarity scene">
+  <defs>
+    <linearGradient id="wall" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#e9f3f2"/>
+      <stop offset="1" stop-color="#b6ced2"/>
+    </linearGradient>
+    <linearGradient id="floor" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#759098"/>
+      <stop offset="1" stop-color="#31464d"/>
+    </linearGradient>
+    <linearGradient id="sky" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#8bd5ee"/>
+      <stop offset="1" stop-color="#e4f7ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="720" fill="#d9e8e9"/>
+  <rect width="1200" height="468" fill="url(#wall)"/>
+  <path d="M0 468h1200v252H0z" fill="url(#floor)"/>
+  <path d="M0 468h1200" stroke="#6f8990" stroke-width="3"/>
+  <rect x="712" y="74" width="336" height="238" rx="8" fill="#f7fcfc" stroke="#5f858e" stroke-width="6"/>
+  <rect x="732" y="94" width="296" height="198" rx="2" fill="url(#sky)"/>
+  <circle cx="978" cy="122" r="34" fill="#fff4ad"/>
+  <path d="M732 250c70-52 118-72 178-26 38 30 62 28 118-4v72H732z" fill="#4e9a77"/>
+  <path d="M732 270c94-64 152-58 214-18 30 20 52 20 82 8v32H732z" fill="#2f7658"/>
+  <rect x="150" y="74" width="350" height="470" rx="10" fill="#ffffff" stroke="#26353a" stroke-width="8"/>
+  <g fill="#1c2428" font-family="Arial, Helvetica, sans-serif" text-anchor="middle" font-weight="700">
+    <text x="325" y="188" font-size="126">E</text>
+    <text x="270" y="288" font-size="76">F</text>
+    <text x="380" y="288" font-size="76">P</text>
+    <text x="240" y="376" font-size="56">T</text>
+    <text x="326" y="376" font-size="56">O</text>
+    <text x="412" y="376" font-size="56">Z</text>
+    <text x="218" y="450" font-size="40">L</text>
+    <text x="286" y="450" font-size="40">P</text>
+    <text x="354" y="450" font-size="40">E</text>
+    <text x="422" y="450" font-size="40">D</text>
+    <text x="196" y="506" font-size="28">P</text>
+    <text x="256" y="506" font-size="28">E</text>
+    <text x="316" y="506" font-size="28">C</text>
+    <text x="376" y="506" font-size="28">F</text>
+    <text x="436" y="506" font-size="28">D</text>
+  </g>
+  <g transform="translate(820 406)">
+    <rect x="0" y="0" width="120" height="142" rx="12" fill="#203d46"/>
+    <rect x="16" y="18" width="88" height="60" rx="6" fill="#93dbe2"/>
+    <circle cx="60" cy="110" r="18" fill="#ff756a"/>
+    <path d="M28 112h64" stroke="#f7fcfc" stroke-width="6" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(670 462)">
+    <rect x="0" y="0" width="96" height="124" rx="8" fill="#38545e"/>
+    <rect x="16" y="18" width="64" height="76" rx="4" fill="#f4f1e7"/>
+    <path d="M26 38h44M26 56h44M26 74h34" stroke="#26353a" stroke-width="5" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(1015 448)">
+    <path d="M48 134V58" stroke="#345154" stroke-width="10" stroke-linecap="round"/>
+    <path d="M48 84c-44-20-44-70 0-84 44 14 44 64 0 84z" fill="#4ca66f"/>
+    <path d="M48 96c50-22 80 12 54 54-50 10-70-12-54-54z" fill="#2f8059"/>
+    <path d="M48 96c-50-22-80 12-54 54 50 10 70-12 54-54z" fill="#3f9568"/>
+  </g>
+  <g opacity="0.18" fill="none" stroke="#ffffff" stroke-width="2">
+    <path d="M86 625h1032"/>
+    <path d="M132 594h946"/>
+    <path d="M178 564h854"/>
+  </g>
+</svg>

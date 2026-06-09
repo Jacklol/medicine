@@ -40,6 +40,10 @@ var _camera;
 var _scene;
 var _renderer;
 var _visualStage;
+var _heroHeartFrame;
+var _isHeroSyncDragging = false;
+var _lastHeroSyncX = 0;
+var _lastHeroSyncY = 0;
 
 var _bgColor;
 
@@ -59,6 +63,7 @@ var _isSkipRendering = false;
 function init() {
 
     _visualStage = document.querySelector('.visual-stage') || document.body;
+    _heroHeartFrame = document.querySelector('.hero-heart-frame');
 
     if(settings.useStats) {
         _stats = new Stats();
@@ -223,6 +228,14 @@ function init() {
     window.addEventListener('mousemove', _onMove);
     window.addEventListener('touchmove', _bindTouch(_onMove));
     window.addEventListener('keyup', _onKeyUp);
+    _visualStage.addEventListener('mousedown', _onHeroSyncStart);
+    window.addEventListener('mousemove', _onHeroSyncMove);
+    window.addEventListener('mouseup', _onHeroSyncEnd);
+    _visualStage.addEventListener('touchstart', _onHeroSyncStart, { passive: false });
+    window.addEventListener('touchmove', _onHeroSyncMove, { passive: false });
+    window.addEventListener('touchend', _onHeroSyncEnd);
+    window.addEventListener('touchcancel', _onHeroSyncEnd);
+    _visualStage.addEventListener('dblclick', _resetHeroHeartRotation);
 
     _time = Date.now();
     _onResize();
@@ -242,10 +255,57 @@ function _onMove(evt) {
     settings.mouse.y = -((evt.clientY - bounds.top) / bounds.height) * 2 + 1;
 }
 
+function _onHeroSyncStart(evt) {
+    var point = _getSyncPoint(evt);
+    if(!point) return;
+    _isHeroSyncDragging = true;
+    _lastHeroSyncX = point.x;
+    _lastHeroSyncY = point.y;
+}
+
+function _onHeroSyncMove(evt) {
+    if(!_isHeroSyncDragging) return;
+    var point = _getSyncPoint(evt);
+    if(!point) return;
+    var dx = point.x - _lastHeroSyncX;
+    var dy = point.y - _lastHeroSyncY;
+    _lastHeroSyncX = point.x;
+    _lastHeroSyncY = point.y;
+    _syncHeroHeartRotation(dx, dy);
+}
+
+function _onHeroSyncEnd() {
+    _isHeroSyncDragging = false;
+}
+
+function _getSyncPoint(evt) {
+    var touch = evt.touches && evt.touches.length ? evt.touches[0] : null;
+    if(!touch && evt.changedTouches && evt.changedTouches.length) touch = evt.changedTouches[0];
+    if(touch) return { x: touch.clientX, y: touch.clientY };
+    if(evt.clientX === undefined || evt.clientY === undefined) return null;
+    return { x: evt.clientX, y: evt.clientY };
+}
+
+function _syncHeroHeartRotation(dx, dy) {
+    if(!_heroHeartFrame || !_heroHeartFrame.contentWindow) return;
+    _heroHeartFrame.contentWindow.postMessage({
+        type: 'hemaflow-heart-drag',
+        dx: dx,
+        dy: dy
+    }, '*');
+}
+
+function _resetHeroHeartRotation() {
+    if(!_heroHeartFrame || !_heroHeartFrame.contentWindow) return;
+    _heroHeartFrame.contentWindow.postMessage({
+        type: 'hemaflow-heart-reset'
+    }, '*');
+}
+
 function _onKeyUp(evt) {
     if(evt.keyCode === 32) {
-        settings.speed = settings.speed === 0 ? 0.45 : 0;
-        settings.dieSpeed = settings.dieSpeed === 0 ? 0.0035  : 0;
+        settings.speed = settings.speed === 0 ? 0.26 : 0;
+        settings.dieSpeed = settings.dieSpeed === 0 ? 0.0022  : 0;
     }
 }
 

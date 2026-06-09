@@ -23,7 +23,7 @@
 
         <link href='https://fonts.googleapis.com/css?family=Oxygen:400,700' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="css/normalize.css">
-        <link rel="stylesheet" href="css/index.css">
+        <link rel="stylesheet" href="css/index.css?v=combined-9">
     </head>
     <body>
         <header class="site-header">
@@ -33,6 +33,8 @@
             </a>
             <nav class="site-nav" aria-label="Main navigation">
                 <a href="#company">Company</a>
+                <a href="#eye">Eye</a>
+                <a href="#lens-aging">Lens</a>
                 <a href="#constraint">Heart</a>
                 <a href="#services">Services</a>
                 <a href="#contact">Contact</a>
@@ -43,6 +45,7 @@
             <section class="hero" id="top">
                 <div class="visual-shell" aria-label="Organic blood-flow animation">
                     <div class="visual-stage"></div>
+                    <iframe class="hero-heart-frame" src="particle-love/constraint/index.html?v=shape-12&transparent=1&hero=1#motionBlurQuality=medium" title="Beating anatomical heart in blood flow"></iframe>
                 </div>
                 <div class="hero-copy">
                     <div class="hero-heading">
@@ -67,6 +70,60 @@
                 </div>
             </section>
 
+            <section class="content-section eye-section" id="eye">
+                <div class="section-kicker">Eye Anatomy</div>
+                <div class="eye-layout">
+                    <div class="eye-copy">
+                        <h2>A refined eye model that opens into five key clinical layers.</h2>
+                        <p>The scene starts as a recognizable external eye, then opens into a cleaner focused model: cornea, iris and pupil, crystalline lens, retina, and optic nerve.</p>
+                        <div class="eye-parts" aria-label="Eye anatomy regions">
+                            <span>Cornea</span>
+                            <span>Iris</span>
+                            <span>Lens</span>
+                            <span>Retina</span>
+                            <span>Optic nerve</span>
+                        </div>
+                    </div>
+                    <div class="eye-shell">
+                        <iframe class="eye-frame" src="eye-anatomy/index.html?v=eye-10" title="Interactive anatomical eye model"></iframe>
+                    </div>
+                </div>
+            </section>
+
+            <section class="lens-aging-section" id="lens-aging" data-lens-aging>
+                <div class="lens-aging-sticky">
+                    <div class="lens-aging-copy">
+                        <p class="section-kicker">Lens Clarity</p>
+                        <h2>Vision shifts as the crystalline lens ages, then clears again with a new lens.</h2>
+                        <p class="lens-aging-summary">Move through lens aging from a clear young lens to dense clouding, then into a crisp view after replacement.</p>
+                        <div class="lens-aging-readout" aria-live="polite">
+                            <strong class="lens-stage-title">Clear young lens</strong>
+                            <span class="lens-stage-body">High contrast, neutral color, and a sharp retinal image.</span>
+                        </div>
+                    </div>
+                    <div class="lens-aging-visual" aria-label="Interactive lens clarity simulation">
+                        <div class="vision-window">
+                            <img class="vision-image" src="images/lens-vision.svg" alt="">
+                            <div class="vision-haze"></div>
+                            <div class="vision-vignette"></div>
+                            <div class="lens-optic old-lens"></div>
+                            <div class="lens-optic new-lens"></div>
+                        </div>
+                        <div class="lens-slider-control">
+                            <input class="lens-progress-slider" type="range" min="0" max="100" value="0" step="1" aria-label="Lens clarity stage">
+                            <output class="lens-slider-value" aria-live="polite">20 years</output>
+                        </div>
+                        <div class="lens-timeline" aria-hidden="true">
+                            <span data-step="0">20</span>
+                            <span data-step="1">45</span>
+                            <span data-step="2">65</span>
+                            <span data-step="3">78</span>
+                            <span data-step="4">New lens</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <section class="content-section constraint-section" id="constraint">
                 <div class="section-kicker">Constraint Heart</div>
                 <div class="constraint-grid">
@@ -77,7 +134,7 @@
                     <a class="source-link" href="https://github.com/edankwan/Constraint" target="_blank" rel="noreferrer">Source on GitHub</a>
                 </div>
                 <div class="constraint-shell">
-                    <iframe class="constraint-frame" src="particle-love/constraint/index.html?v=shape-6#motionBlurQuality=medium" title="Anatomical beating particle heart" loading="lazy"></iframe>
+                    <iframe class="constraint-frame" src="particle-love/constraint/index.html?v=shape-12#motionBlurQuality=medium" title="Anatomical beating particle heart" loading="lazy"></iframe>
                 </div>
             </section>
 
@@ -139,6 +196,7 @@
             <span><a href="https://www.youtube.com/watch?v=tcyAdqW8DrM" target="_blank">Youtube</a></span>
         </div>
         <script src="js/three.r74.min.js"></script>
-        <script src="js/index.js"></script>
+        <script src="js/index.js?v=sync-1"></script>
+        <script src="js/lens-aging.js?v=lens-3"></script>
     </body>
 </html>

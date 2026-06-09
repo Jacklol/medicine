@@ -27,7 +27,7 @@ exports.simulatorTextureWidth = amountInfo[0];
 exports.simulatorTextureHeight = amountInfo[1];
 
 exports.emitterDistanceRatio = 0.65;
-exports.emitterSpeed = 14.0;
+exports.emitterSpeed = 8.5;
 
 exports.volumeWidth = 256;
 exports.volumeHeight = 128;
@@ -36,8 +36,8 @@ exports.volumeSliceColumn = 8;
 exports.volumeSliceRow = 16;
 exports.volumeScale = 7;
 
-exports.speed = 0.45;
-exports.dieSpeed = 0.0035;
+exports.speed = 0.26;
+exports.dieSpeed = 0.0022;
 exports.radius = amountInfo[2];
 exports.blur = 0.35;
 exports.curlSize = 0.00062;
@@ -68,4 +68,3 @@ exports.vignette = false;
 exports.vignetteMultiplier = 0.8;
 
 exports.capablePrecision = undef;
-

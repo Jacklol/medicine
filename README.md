@@ -1,15 +1,19 @@
-## Hyper Mix
+# Medicine
 
-![](https://raw.githubusercontent.com/edankwan/hyper-mix/master/app/images/screenshot.jpg)
+Interactive medical landing page with WebGL blood flow, an anatomical heart, eye anatomy, and lens clarity simulation.
 
-[Live demo](http://www.edankwan.com/experiments/hyper-mix/) | [Video](https://www.youtube.com/watch?v=tcyAdqW8DrM)
+## Live
 
+GitHub Pages: https://jacklol.github.io/medicine/
 
+## Development
 
-## Development and deployment
-- dev: `node dev`
-- deploy: `node build`
+- Install dependencies: `npm install`
+- Start local server: `npm run dev`
+- Build bundled animation code: `npm run build`
+
+The static site entry point is `app/index.html`.
 
 ## License
-This experiment is under MIT License.
 
+Based on the Hyper Mix experiment by Edan Kwan. See `LICENSE.md`.
