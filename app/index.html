@@ -21,7 +21,7 @@
 
         <link href="https://fonts.googleapis.com/css?family=Oxygen:400,700" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="css/normalize.css">
-        <link rel="stylesheet" href="css/index.css?v=simple-2">
+        <link rel="stylesheet" href="css/index.css?v=simple-5">
     </head>
     <body>
         <header class="site-header">
@@ -113,6 +113,59 @@
             <span>тест</span>
         </footer>
 
+        <aside class="theme-tester" data-theme-tester aria-label="Настройки цветов">
+            <div class="theme-tester-head">
+                <span>Цвета</span>
+                <button type="button" data-theme-reset>Сброс</button>
+            </div>
+            <div class="theme-presets" aria-label="Быстрые палитры">
+                <button class="theme-preset" type="button" data-theme-preset="blood" aria-pressed="true">
+                    <span class="theme-swatch"></span>
+                    Кровь
+                </button>
+                <button class="theme-preset" type="button" data-theme-preset="clinical" aria-pressed="false">
+                    <span class="theme-swatch"></span>
+                    Клиника
+                </button>
+                <button class="theme-preset" type="button" data-theme-preset="graphite" aria-pressed="false">
+                    <span class="theme-swatch"></span>
+                    Графит
+                </button>
+                <button class="theme-preset" type="button" data-theme-preset="light" aria-pressed="false">
+                    <span class="theme-swatch"></span>
+                    Светлый
+                </button>
+            </div>
+            <label>
+                <span>Фон</span>
+                <input type="color" value="#14080a" data-theme-color="--page-bg">
+            </label>
+            <label>
+                <span>Блоки</span>
+                <input type="color" value="#071019" data-theme-color="--surface-bg">
+            </label>
+            <label>
+                <span>Панели</span>
+                <input type="color" value="#0f0507" data-theme-color="--panel-bg">
+            </label>
+            <label>
+                <span>Акцент</span>
+                <input type="color" value="#ff756a" data-theme-color="--accent">
+            </label>
+            <label>
+                <span>Холодный</span>
+                <input type="color" value="#8de8f0" data-theme-color="--cool">
+            </label>
+            <label>
+                <span>Теплый</span>
+                <input type="color" value="#ffb975" data-theme-color="--warm">
+            </label>
+            <label>
+                <span>Текст</span>
+                <input type="color" value="#fff8f5" data-theme-color="--text-main">
+            </label>
+        </aside>
+
         <div class="mobile" aria-hidden="true"></div>
         <div class="logo" aria-hidden="true"></div>
         <div class="instruction" aria-hidden="true">Press space key to toggle movement</div>
@@ -126,5 +179,6 @@
         <script src="js/three.r74.min.js"></script>
         <script src="js/index.js?v=sync-1"></script>
         <script src="js/lens-aging.js?v=lens-3"></script>
+        <script src="js/theme-tester.js?v=theme-1"></script>
     </body>
 </html>
